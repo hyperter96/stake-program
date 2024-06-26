@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{Token, Mint, TokenAccount};
+use anchor_spl::token::{self, Token, Mint, TokenAccount};
 
-declare_id!("93pLrHhAYXqUXyEshp5UGj5RjFx6tEWDcDwksCTt7ruR");
+declare_id!("HuyaDbbnjpkJK78DmzkvTSiNQVgmsS1XcXU2wp6iWqF");
 
 pub mod constants {
     pub const VAULT_SEED: &[u8] = b"vault";

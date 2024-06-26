@@ -7,11 +7,14 @@ skip-lint = false
 [programs.localnet]
 stake_program = "HuyaDbbnjpkJK78DmzkvTSiNQVgmsS1XcXU2wp6iWqF"
 
+[programs.devnet]
+stake_program = "HuyaDbbnjpkJK78DmzkvTSiNQVgmsS1XcXU2wp6iWqF"
+
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "localnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
