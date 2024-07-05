@@ -1,5 +1,6 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
+import fs from "fs";
 import { StakeProgram } from "../target/types/stake_program";
 import { Connection, Keypair, PublicKey, clusterApiUrl } from "@solana/web3.js";
 import { createMint, getOrCreateAssociatedTokenAccount, mintTo } from "@solana/spl-token";
@@ -16,16 +17,15 @@ describe("test", () => {
   const connection = new Connection("http://127.0.0.1:8899", "confirmed");
 
   // 铸造的keypair
-  const mintKeypair = Keypair.fromSecretKey(
-    new Uint8Array([
-      164, 132, 244, 170,  16, 236,  71, 148,  50, 173, 208,
-       63, 235,  48, 179,  73,  43, 251, 131, 107, 118,  97,
-      118, 188,  92, 109, 110, 217,  68, 232, 232,  14,  39,
-      162, 108, 118,   1, 223, 224,  75, 193,  13, 127,  43,
-      221,  77, 170, 233, 128, 218, 253, 184, 210, 218,  53,
-       27, 101,  58, 100,  50,  91,  16, 241, 219
-    ])
-  );
+  var mintKeypair;
+  if (fs.existsSync("./tests/utils/staking_mint_secret.json")) {
+    const secret = new Uint8Array(fs.readFileSync("./tests/utils/staking_mint_secret.json"))
+    mintKeypair = Keypair.fromSecretKey(secret)
+  } else {
+    mintKeypair = Keypair.generate();
+  // const mintKeypair = Keypair.generate();
+    fs.appendFileSync("./tests/utils/staking_mint_secret.json", Buffer.from(mintKeypair.secretKey));
+  }
   // const mintKeypair = Keypair.generate();
   // console.log(mintKeypair);
 
@@ -46,7 +46,7 @@ describe("test", () => {
 
   it("Is initialized!", async () => {
     // 创建mint token
-    // let mint = await createMintToken();
+    let mint = await createMintToken();
 
     // 创建vault账户
     let [vaultAccount] = PublicKey.findProgramAddressSync(
@@ -58,7 +58,7 @@ describe("test", () => {
     let initAccount = {
       signer: payer.publicKey,
       tokenVaultAccount: vaultAccount,
-      mint: mintKeypair.publicKey,
+      mint: mint.toBase58(),
     };
 
     const tx = await program.methods
